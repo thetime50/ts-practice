@@ -1,5 +1,5 @@
 // ## pm02-变量声明
-// npx tsc--pretty
+// npx tsc --pretty
 
 
 // ### let 声明
