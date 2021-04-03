@@ -9,3 +9,4 @@ function file4fn2(params) {
     console.log('file4fn2');
 }
 exports.file4fn2 = file4fn2;
+//# sourceMappingURL=file4.js.map
