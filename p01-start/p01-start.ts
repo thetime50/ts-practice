@@ -1,3 +1,4 @@
+// p01-5分钟上手TypeScript
 // npx tsc p01 - start.ts
 
 // ## 类型注解
