@@ -1,4 +1,4 @@
-// p04 - JavaScript迁移
+// p04-JavaScript迁移
 // npx tsc --pretty
 // ts-node 好像不会识别tsconfig.json文件
 
