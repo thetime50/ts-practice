@@ -151,3 +151,103 @@ function classStatic() {
 
 }
 classStatic()
+
+
+
+function testFn() {
+    let test = { m: 1, n: '23' }; // 定义数据即声明数据结构
+    // test.c = 3
+    interface TestIf {
+        m: number,
+        n: string,
+    }
+    interface TestIf1 {
+        p: number,
+        q: string,
+    }
+    // let test1: TestIf = {} // 类型不符
+    let a: any = {}
+    let test2: TestIf = a // any类型是特殊的， 不会类型检查
+    test2 = a
+    a = test2
+    let tif = <TestIf1>{}
+    // test2 = tif // 类型不符
+    a = tif
+    test2 = a
+    let test3: TestIf = { m: 3, n: '5' }
+    let test4 = <TestIf>{}
+}
+
+testFn()
+
+function extendsFn() {
+
+    interface Shape {
+        color: string;
+    }
+
+    interface Square extends Shape {
+        sideLength: number;
+    }
+
+    let square = <Square>{};
+    square.color = "blue";
+    square.sideLength = 10;
+
+    // 继承多个
+
+    interface PenStroke {
+        penWidth: number;
+    }
+
+    interface Square extends Shape, PenStroke {
+        sideLength: number;
+    }
+
+    let square1 = <Square>{};
+    square1.color = "blue";
+    square1.sideLength = 10;
+    square1.penWidth = 5.0;
+}
+extendsFn()
+
+function mixinFn() {
+    interface Counter {
+        (start: number): string;
+        interval: number;
+        reset(): void;
+    }
+
+    function getCounter(): Counter {
+        let counter = <Counter>function (start: number) { };
+        counter.interval = 123;
+        counter.reset = function () { };
+        return counter;
+    }
+
+    let c = getCounter();
+    c(10);
+    c.reset();
+    c.interval = 5.0;
+}
+mixinFn()
+
+function extendsClassFn() {
+    class Control {
+        private state: any;
+    }
+
+    interface SelectableControl extends Control { // 接口继承类
+        select(): void;
+    }
+
+    class Button extends Control implements SelectableControl { // 继承父类 并应用继承接口的定义
+        // 通过继承产生state属性
+        select() { }
+    }
+
+    class TextBox extends Control {
+        select() { }
+    }
+}
+extendsClassFn()
