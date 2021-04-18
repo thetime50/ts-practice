@@ -9,6 +9,6 @@
         "noImplicitThis": true, // 需要声明this的类型
     },
     "include": [
-        "./pm03-interface.ts"
+        "./pm04-class.ts"
     ]
 }
