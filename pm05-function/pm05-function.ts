@@ -69,6 +69,61 @@ function thisType() {
     }
     console.log(addObj.fn())
 }
+function thisInCallback(){
+    interface UIElement {
+        addClickListener(onclick: (this: void, e: Event) => void): void;
+    }
+    let uiElement: UIElement = {
+        addClickListener(onclick) {
+            onclick(new Event('hello'));
+        }
+    }
+    class Handler {
+        info: string;
+        onClickBad(this: Handler, e: Event) { // 传入注册函数后没有明确的引用关系确定this 默认是window 严格模式下是undefined
+            // oops, used this here. using this callback would crash at runtime
+            this.info = e.type // e.message;
+        }
+        onClickGood(this: void, e: Event) {
+            // can't use this here because it's of type void!
+            console.log('clicked!');
+        }
+        onClickGood1 = (e: Event) => { this.info = e.type }
+    }
+    let h = new Handler();
+    // uiElement.addClickListener(h.onClickBad); // error!
+    uiElement.addClickListener(h.onClickGood);
+    uiElement.addClickListener(h.onClickGood1); 
+}
+
+function overload(){
+    let suits = ["hearts", "spades", "clubs", "diamonds"];
+
+    // 重载定义
+    function pickCard(x: { suit: string; card: number; }[]): number;
+    function pickCard(x: number): { suit: string; card: number; };
+    // 函数体定义
+    function pickCard(x: any ): any {
+        // Check to see if we're working with an object/array
+        // if so, they gave us the deck and we'll pick the card
+        if (typeof x == "object") {
+            let pickedCard = Math.floor(Math.random() * x.length);
+            return pickedCard;
+        }
+        // Otherwise just let them pick the card
+        else if (typeof x == "number") {
+            let pickedSuit = Math.floor(x / 13);
+            return { suit: suits[pickedSuit], card: x % 13 };
+        }
+    }
+
+    let myDeck = [{ suit: "diamonds", card: 2 }, { suit: "spades", card: 10 }, { suit: "hearts", card: 4 }];
+    let pickedCard1 = myDeck[pickCard(myDeck)];
+    alert("card: " + pickedCard1.card + " of " + pickedCard1.suit);
+
+    let pickedCard2 = pickCard(15);
+    alert("card: " + pickedCard2.card + " of " + pickedCard2.suit);
+}
 
 funTypeDefine()
 typeInfer()
@@ -76,4 +131,6 @@ kexuanCanshuMorenCanshu()
 kexuanMoren()
 shengyuCanshu()
 thisType()
+thisInCallback()
+overload()
 
