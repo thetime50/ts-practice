@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "outDir": "./built",
+        "allowJs": true,
+        "target": "es5",
+        "sourceMap": true,
+        "noImplicitAny": true, // 没有隐式的any 一般是函数参数会省略了类型声明
+        "strictNullChecks": true, // null和undefined 是单独的类型
+        "noImplicitThis": true, // 需要声明this的类型
+    },
+    "include": [
+        "pm09-type-compatibility.ts"
+    ]
+}
