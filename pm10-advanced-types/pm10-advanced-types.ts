@@ -469,16 +469,17 @@ function indexType(){
     let value: Map<number>['foo'] = 3; // number
 
 
+    // 索引访问测试
     type DataType<T> = {
         value: T;
     }
     type V = DataType<string>
-    // 索引访问测试
     function getProperty1<T, K extends keyof T>(o: T, name: K): T[K] {
         let result: T[K] = o[name];
         return result; // o[name] is of type T[K]
     }
     function getProperty2<T, K extends keyof T>(o: T, name: K): DataType<T[K]> {
+        // 这里的name是一个确定的值
         let result: DataType<T[K]> ={
             value: o[name]
         }
@@ -536,6 +537,8 @@ function mappingTypeApply(){
     function proxify<T, P extends keyof T>(o: T): Proxify<T> {
         let res = {} as Proxify<T>;
         for (const key in o) {
+            // 和 getProperty2 不同 这里的 key 没法和 P 对应上
+            // 类型推断会处理好
             // let p: Proxy_<T[P]> = {
             res[key] = {
                 get(){
@@ -561,9 +564,24 @@ function mappingTypeApply(){
 
     type ThreeStringProps = Record<'prop1' | 'prop2' | 'prop3', string>
 
-// K extends keyof T 传入的是对象类型
-// K extends string 传入的是字面量类型
+    // K extends keyof T 传入的是对象类型
+    // K extends string 传入的是字面量类型
+
+    // 由映射类型进行推断
+    function unproxify<T>(t: Proxify<T>): T {
+        let result = {} as T;
+        for (const k in t) {
+            result[k] = t[k].get();
+        }
+        return result;
+    }
+
+    let originalProps = unproxify(proxyProps);
 }
+
+
+
+
 intersectionTypes()
 unionTypes()
 instanceofType()
