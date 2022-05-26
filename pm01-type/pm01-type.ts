@@ -115,7 +115,10 @@ create(null); // OK
 // create(false); // Error
 // create(undefined); // Error
 
-
+type TypeA = { a: String };
+type TypeB = { a: String, fn: Function };
+const objA: Object = { a: "a" } as TypeA;
+// const objB: Object = { a: "a" } as TypeB; // 有function 类型的属性不能赋值给 Object类型
 
 
 // - 类型断言

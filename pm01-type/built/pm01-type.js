@@ -12,7 +12,7 @@ var name1 = "bob";
 name1 = "smith";
 var name2 = "Gene";
 var age = 37;
-var sentence = "Hello, my name is " + name1 + ".\n\nI'll be " + (age + 1) + " years old next month.";
+var sentence = "Hello, my name is ".concat(name1, ".\n\nI'll be ").concat(age + 1, " years old next month.");
 // - 数组
 var list = [1, 2, 3]; // 元素类型后面接上 []
 var list1 = [1, 2, 3]; // Array<元素类型>：
@@ -65,7 +65,7 @@ var notSure = 4;
 notSure = "maybe a string instead";
 notSure = false; // okay, definitely a boolean
 var notSure1 = 4;
-notSure1.ifItExists(); // okay, ifItExists might exist at runtime
+// notSure1.ifItExists(); // okay, ifItExists might exist at runtime
 notSure1.toFixed(); // okay, toFixed exists (but the compiler doesn't check)
 // Object类型的变量不能在上面调用任意方法
 // let prettySure: Object = 4;
@@ -102,10 +102,7 @@ function infiniteLoop() {
 }
 create({ prop: 0 }); // OK
 create(null); // OK
-// create(42); // Error
-// create("string"); // Error
-// create(false); // Error
-// create(undefined); // Error
+var obj = { a: "a" };
 // - 类型断言
 // “尖括号”语法：
 var someValue = "this is a string";

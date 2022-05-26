@@ -249,5 +249,11 @@ function extendsClassFn() {
     class TextBox extends Control {
         select() { }
     }
+
+    // 错误：“Image”类型缺少“state”属性。
+    // class Image implements SelectableControl {
+    //     // private state: any; // 这里的state必须是由Control 继承而来的 Control->state 类型
+    //     select() { }
+    // }
 }
 extendsClassFn()
