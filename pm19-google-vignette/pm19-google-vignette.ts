@@ -57,9 +57,58 @@ function classDecorators(){
             this.hello = m
         }
     }
-    console.log('new Greeter2("world")', new Greeter2("world"))
+    let greet2 = new Greeter2("world")
+    console.log('new Greeter2("world")', greet2)
+    // greet2.newProperty
+
+    function reportableClassDecorator<T extends { new(...args: any[]): {} }>(constructor: T) {
+        return class extends constructor {
+            reportingURL = "http://www...";
+        };
+    }
+
+    @reportableClassDecorator
+    class BugReport {
+        type = "report";
+        title: string;
+
+        constructor(t: string) {
+            this.title = t;
+        }
+    }
+
+    const bug = new BugReport("Needs dark mode");
+    console.log(bug.title); // Prints "Needs dark mode"
+    console.log(bug.type); // Prints "report"
+
+    // 装饰器不会修改ts 类型 所以新属性不会被识别 (虽然对象上会有这属性)
+    // bug.reportingURL;
 }
 
+function fun2Decorators(){
+    class Greeter {
+        greeting: string;
+        constructor(message: string) {
+            this.greeting = message;
+        }
+
+        @enumerable(false)
+        greet() {
+            return "Hello, " + this.greeting;
+        }
+    }
+
+    function enumerable(value: boolean) {
+        return function(target: any, propertyKry: string, descriptor: PropertyDescriptor) {
+            descriptor.enumerable = value;
+        }
+    }
+}
+function propertyDecorators(){
+
+}
 
 funDecorators()
 classDecorators()
+fun2Decorators()
+propertyDecorators()
