@@ -21,6 +21,10 @@
   },
   "homepage": "https://github.com/thetime50/ts-practice#readme",
   "devDependencies": {
+    "ts-node": "^10.8.2",
     "typescript": "^4.5.4"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
   }
 }

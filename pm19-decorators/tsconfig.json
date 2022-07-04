@@ -10,6 +10,7 @@
         "experimentalDecorators":true
     },
     "include": [
-        "pm19-decorators.ts"
+        "pm19-decorators.ts",
+        "../node_modules/reflect-metadata/index.d.ts"
     ]
 }

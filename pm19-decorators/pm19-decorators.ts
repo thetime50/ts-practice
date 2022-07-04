@@ -4,6 +4,7 @@
 // https://www.typescriptlang.org/docs/handbook/decorators.html
 
 function funDecorators(){
+    console.log('\n/****funDecorators****/')
     function first() {
         console.log("first(): factory evaluated");
         return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
@@ -30,6 +31,7 @@ function funDecorators(){
 }
 
 function classDecorators(){
+    console.log('\n/****classDecorators****/')
     function sealed(constructor: Function) {
         Object.seal(constructor);// 封闭对象的属性加载修改
         Object.seal(constructor.prototype);// 封闭对象的属性加载修改
@@ -88,6 +90,7 @@ function classDecorators(){
 }
 
 function methodDecorators(){
+    console.log('\n/****methodDecorators****/')
     class Greeter {
         greeting: string;
         constructor(message: string){
@@ -110,7 +113,37 @@ function methodDecorators(){
     console.log('Object.keys( greeter)', Object.keys( greeter))
 }
 
+function metuod2Descorators(){
+    console.log('\n/****metuod2Descorators****/')
+    class MethodTest{
+        @methodDec('static')
+        static staticMethod(val: string|number){
+            console.log('staticMethod',this, val)
+        }
+
+        @methodDec('instance')
+        instanceMethod(val: string|number){
+            console.log('instanceMethod',this, val)
+        }
+    }
+    function methodDec(type:string){ // 都是在类声明的时候调用 而不是在实例化的时候
+        return function (
+            target:any,
+            propertyKey:string,
+            descriptor:PropertyDescriptor
+        ){
+            target['__'+type] = type
+        }
+    }
+
+    const methodTest = new MethodTest()
+    MethodTest.staticMethod(2)
+    methodTest.instanceMethod(1)
+    console.log('methodTest', methodTest)
+}
+
 function accessorDecorators(){
+    console.log('\n/****accessorDecorators****/')
     class Point{
         private _x: number;
         private _y: number;
@@ -142,8 +175,34 @@ function accessorDecorators(){
     console.log('point.x', point.x)
     point.x = 3; // 报错
 }
+import "reflect-metadata";
+// require("reflect-metadata")
+function propertyDecorators(){
+    console.log('\n/****propertyDecorators****/')
+    const formatMetadataKey = Symbol("format");
+    function format(formatString: string) {
+        return Reflect.metadata(formatMetadataKey, formatString);
+    }
+    function getFormat(target: any, propertyKey: string) {
+        return Reflect.getMetadata(formatMetadataKey, target, propertyKey);
+    }
+    class Greeter{
+        @format("Hello,%s")
+        greeting: string;
+
+        constructor(message: string){
+            this.greeting = message
+        }
+        greet(){
+            let formatString =getFormat(this,"greeting")
+            return formatString.replace("%s", this.greeting)
+        }
+    }
+}
 
 funDecorators()
 classDecorators()
 methodDecorators()
+metuod2Descorators()
 accessorDecorators()
+propertyDecorators()
