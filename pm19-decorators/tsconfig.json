@@ -10,6 +10,6 @@
         "experimentalDecorators":true
     },
     "include": [
-        "pm19-google-vignette.ts"
+        "pm19-decorators.ts"
     ]
 }
