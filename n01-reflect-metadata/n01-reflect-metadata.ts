@@ -116,9 +116,34 @@ function metadataDecorator(){
     const name = Reflect.getMetadata(nameSymbol, metadataInstance, 'name')
     const methodVal = Reflect.getMetadata('getName', metadataInstance, 'getName')
     const staticVal = Reflect.getMetadata('static', MetaDataClass, 'staticMethod')
-    console.log(value, name, methodVal, staticVal)
+    console.log('value, name, methodVal, staticVal',value, name, methodVal, staticVal)
+}
+
+function defineMetadataMethod(){
+    class DefineMetadata{
+        static staticMethod(){}
+        static staticProperty = "static"
+        getName(){}
+    }
+
+    const type = 'type'
+    Reflect.defineMetadata(type, 'class', DefineMetadata)
+    Reflect.defineMetadata(type, 'staticMethod', DefineMetadata.staticMethod)
+    Reflect.defineMetadata(type, 'method', DefineMetadata.prototype.getName)
+    Reflect.defineMetadata(type, 'staticProperty', DefineMetadata,'staticProperty')
+    const t1 = Reflect.getMetadata(type, DefineMetadata)
+    const t2 = Reflect.getMetadata(type, DefineMetadata.staticMethod)
+    const t3 = Reflect.getMetadata(type, DefineMetadata.prototype.getName)
+    const t4 = Reflect.getMetadata(type, DefineMetadata, 'staticProperty')
+    console.log('t1, t2, t3, t4', t1, t2, t3, t4)
+    // Reflect.defineMetadata(type, 'staticMethos', DefineMetadata, 'staticMethod')
+    // const t2 = Reflect.getMetadata(type, DefineMetadata, 'staticMethod')
+    // define 的时候使用key值 get 的时候也要使用key 获取，define使用属性定义 获取的时候也要使用属性获取
+    // .metadata 方法是使用 key 值定义的
+
 }
 
 decorateMethod()
 metadataDecorator()
+defineMetadataMethod()
 
