@@ -116,12 +116,12 @@ function methodDecorators(){
 function metuod2Descorators(){
     console.log('\n/****metuod2Descorators****/')
     class MethodTest{
-        @methodDec('static')
+        @methodDec('static') // 静态方法修饰器里传入的是构造函数
         static staticMethod(val: string|number){
             console.log('staticMethod',this, val)
         }
 
-        @methodDec('instance')
+        @methodDec('instance') // 实例(原型)方法修饰器里传入的是原型对象
         instanceMethod(val: string|number){
             console.log('instanceMethod',this, val)
         }
@@ -175,6 +175,7 @@ function accessorDecorators(){
     console.log('point.x', point.x)
     point.x = 3; // 报错
 }
+// https://rbuckton.github.io/reflect-metadata/
 import "reflect-metadata";
 // require("reflect-metadata")
 function propertyDecorators(){
@@ -200,9 +201,54 @@ function propertyDecorators(){
     }
 }
 
+function parameterDecorators(){
+    console.log('\n/****parameterDecorators****/')
+
+    class BugReport{
+        type = "report";
+        title:string;
+        constructor(t: string){
+            this.title = t;
+        }
+
+        @validate
+        print(@required verbose: boolean){
+            if(verbose){
+                return `type:${this.type}\ntitle:${this.title}`
+            }else{
+                return this.title
+            }
+        }
+        
+    }
+
+    const requiredMetadataKey = Symbol("required");
+    function required(target: any, propertyKey: string|symbol, parameterIndex: number){
+        let existingRequiredParameters: number[] = Reflect.getOwnMetadata(requiredMetadataKey, target, propertyKey) || [];
+        existingRequiredParameters.push(parameterIndex)
+        Reflect.defineMetadata( requiredMetadataKey, existingRequiredParameters, target, propertyKey)
+    }
+
+    function validate(target: any, propertyName: string, descriptor: TypedPropertyDescriptor<Function>){
+        let method = descriptor.value!;
+        descriptor.value = function(){
+            let requiredParameters: number[] = Reflect.getOwnMetadata(requiredMetadataKey, target, propertyName) || [];
+            if(requiredParameters){
+                for(let parameterIndex of requiredParameters){
+                    if(parameterIndex >= arguments.length || arguments[parameterIndex] === undefined){
+                        throw new Error(`Missing required argument: ${parameterIndex}`)
+                    }
+                }
+            }
+            return method.apply(this, arguments)
+        }
+    }
+}
+
 funDecorators()
 classDecorators()
 methodDecorators()
 metuod2Descorators()
 accessorDecorators()
 propertyDecorators()
+parameterDecorators()

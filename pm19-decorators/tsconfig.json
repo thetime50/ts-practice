@@ -7,7 +7,8 @@
         "noImplicitAny": true, // 没有隐式的any 一般是函数参数会省略了类型声明
         "strictNullChecks": true, // null和undefined 是单独的类型
         "noImplicitThis": true, // 需要声明this的类型
-        "experimentalDecorators":true
+        "experimentalDecorators":true,
+        "emitDecoratorMetadata": true // ?
     },
     "include": [
         "pm19-decorators.ts",
