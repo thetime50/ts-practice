@@ -199,6 +199,8 @@ function propertyDecorators(){
             return formatString.replace("%s", this.greeting)
         }
     }
+    const greeter = new Greeter("world")
+    console.log('new Greeter("hello")', greeter)
 }
 
 function parameterDecorators(){
