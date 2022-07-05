@@ -85,7 +85,7 @@ function decorateMethod(){
     // 将修改后的 descriptor 应用到对应的方法上
     Object.defineProperty(PropertyAndMethodExample.prototype, 'method', descriptor)
 
-    Reflect.decorate([methodDecorator], PropertyAndMethodExample.prototype, 'method') // 这个也是有效的
+    // Reflect.decorate([methodDecorator], PropertyAndMethodExample.prototype, 'method') // 这个也是有效的
 
     // test method decorator
     const example = new PropertyAndMethodExample
@@ -155,6 +155,9 @@ function defineMetadataMethod(){
 function getMetadataKeysMethod(){
     console.log('\n/****getMetadataKeysMethod****/')
     const type = 'type'
+
+    function methodDecorator(target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
+    }
     @Reflect.metadata('parent','parentValue')
     class Parent{
         getName(){}
@@ -171,14 +174,19 @@ function getMetadataKeysMethod(){
         method(a:string, b:symbol):object{
             return {}
         }
-        method2(){}
+        method2() { }
+        @methodDecorator
+        method3() { }
     }
     let instance = new HasOwnMetadataClas;
     const t1_1 = Reflect.getMetadataKeys(HasOwnMetadataClas)
     const t1_2 = Reflect.getMetadataKeys(HasOwnMetadataClas.prototype, 'method')
     const t1_3 = Reflect.getMetadataKeys(instance, 'name')
+    console.log('t1_1, t1_2, t1_3', t1_1, t1_2, t1_3)
     const t1_4 = Reflect.getMetadataKeys(HasOwnMetadataClas.prototype, 'method2')
-    console.log('t1_1, t1_2, t1_3, t1_4', t1_1, t1_2, t1_3, t1_4)
+    const t1_5 = Reflect.getMetadataKeys(HasOwnMetadataClas.prototype, 'method3') // 有使用装饰器typescript就会添加 design: 属性
+    console.log('t1_4, t1_5', t1_4, t1_5)
+
 
     const t2_1 = Reflect.getOwnMetadataKeys(HasOwnMetadataClas)
     const t2_2 = Reflect.getOwnMetadataKeys(HasOwnMetadataClas.prototype, 'method')
