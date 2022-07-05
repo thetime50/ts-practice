@@ -206,6 +206,7 @@ function propertyDecorators(){
 function parameterDecorators(){
     console.log('\n/****parameterDecorators****/')
 
+    const requiredMetadataKey = Symbol("required");
     class BugReport{
         type = "report";
         title:string;
@@ -224,7 +225,6 @@ function parameterDecorators(){
         
     }
 
-    const requiredMetadataKey = Symbol("required");
     function required(target: any, propertyKey: string|symbol, parameterIndex: number){
         let existingRequiredParameters: number[] = Reflect.getOwnMetadata(requiredMetadataKey, target, propertyKey) || [];
         existingRequiredParameters.push(parameterIndex)
