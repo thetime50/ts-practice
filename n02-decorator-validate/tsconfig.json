@@ -12,6 +12,7 @@
     },
     "include": [
         "n02-decorator-validate.ts",
-        "../node_modules/reflect-metadata/index.d.ts"
+        "../node_modules/reflect-metadata/index.d.ts",
+        "../node_modules/typescript/lib/typescript.d.ts"
     ]
 }
