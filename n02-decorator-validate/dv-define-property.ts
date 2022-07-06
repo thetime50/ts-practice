@@ -5,7 +5,9 @@ import { validateTestFunction } from "./validate-test"
 export function validateDefinePropertyTest(){
     console.log('\n\n/**** validateDefineProperty ****/')
 
-    const validateClass: any = (target: any) => {
+    // const validateClass: any = (target: any) => {
+    // const validateClass = function <T extends { new(...args: any[]): any } >(target:T):T|void {
+    const validateClass = <T extends { new(...args: any[]): any }>(target: T): T | void => {
         // if( Reflect.getO )
         const constructorValid: any = {} // 静态方法
         for (let key of Object.getOwnPropertyNames(target)) {
@@ -62,7 +64,7 @@ export function validateDefinePropertyTest(){
             if (Object.keys(constructorValid).length) {
                 for (let key in constructorValid) {
                     let origin = Object.getOwnPropertyDescriptor(target, key)!
-                    if (ResClass[key].prototype) { // function 函数
+                    if ((<any>ResClass)[key].prototype) { // function 函数 <any> 有更好的方法吗
                         Object.defineProperty(ResClass, key, {
                             ...origin,
                             value: function (...args: any[]) {
@@ -140,7 +142,9 @@ export function validateDefinePropertyTest(){
 export function validateDefinePropertyTest2() { // bad
     console.log('\n\n/**** validateDefineProperty2 ****/')
 
-    const validateClass: any = (target: any) => {
+    // const validateClass: any = (target: any) => {
+    // const validateClass = function <T extends { new(...args: any[]): any } >(target:T):T|void {
+    const validateClass = <T extends { new(...args: any[]): any }>(target: T): T | void => {
         // if( Reflect.getO )
         const constructorValid: any = {} // 静态方法
         for (let key of Object.getOwnPropertyNames(target)) {
@@ -192,7 +196,7 @@ export function validateDefinePropertyTest2() { // bad
             if (Object.keys(constructorValid).length) {
                 for (let key in constructorValid) {
                     let origin = Object.getOwnPropertyDescriptor(target, key)!
-                    if (target[key].prototype) { // function 函数
+                    if ( (<any>target)[key].prototype ) { // function 函数
                         Object.defineProperty(target, key, {
                             ...origin,
                             value: function (...args: any[]) {

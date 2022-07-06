@@ -6,7 +6,9 @@ import { validateTestFunction } from "./validate-test"
 export function validateProxyTest() {
     console.log( '\n\n/**** validateProxyTest ****/' )
 
-    const validateClass: any = (target: any) => {
+    // const validateClass: any = (target: any) => {
+    // const validateClass = function <T extends { new(...args: any[]): any } >(target:T):T|void {
+    const validateClass = <T extends { new(...args: any[]): any } >(target:T):T|void => {
         // if( Reflect.getO )
         const constructorValid: any = {} // 静态方法
         for (let key of Object.getOwnPropertyNames(target)) {
