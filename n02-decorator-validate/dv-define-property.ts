@@ -1,5 +1,6 @@
 // decorator-validate-define-property
 import "reflect-metadata"
+import { validateTestFunction } from "./validate-test"
 
 export function validateDefinePropertyTest(){
     console.log('\n\n/**** validateDefineProperty ****/')
@@ -28,7 +29,7 @@ export function validateDefinePropertyTest(){
                     const that = this
                     for (let key in prototypeValid) {
                         let origin = Object.getOwnPropertyDescriptor(target.prototype, key)!
-                        if (origin.value) { // 方法属性
+                        if (origin.hasOwnProperty('value')) { // 方法属性
                             if (that[key].prototype) { // function 函数
                                 Object.defineProperty(that, key, {
                                     ...origin,
@@ -131,12 +132,12 @@ export function validateDefinePropertyTest(){
             Reflect.defineMetadata(VALIDMDKEY, parameterValidata, target, propertyKey)
         }
     }
-    testFunction(validateClass, validateDecorator)
+    validateTestFunction(validateClass, validateDecorator)
 }
 
 
 
-export function validateDefinePropertyTest2() {
+export function validateDefinePropertyTest2() { // bad
     console.log('\n\n/**** validateDefineProperty2 ****/')
 
     const validateClass: any = (target: any) => {
@@ -156,17 +157,17 @@ export function validateDefinePropertyTest2() {
                 prototypeValid[key] = validate
             }
         }
-        if (Object.keys(constructorValid).length || Object.keys(prototypeValid).length) {
+        if (Object.keys(prototypeValid).length) {
             const prototype = target.prototype
             for (let key in prototypeValid) {
                 let origin = Object.getOwnPropertyDescriptor(prototype, key)!
-                if (origin.value) { // 方法属性
+                if (origin.hasOwnProperty('value')) { // 方法属性
                     if (prototype[key].prototype) { // function 函数
                         Object.defineProperty(prototype, key, {
                             ...origin,
                             value: function (...args: any[]) {
                                 (prototypeValid)[key](...args)
-                                return origin.value.apply(prototype, args)
+                                return origin.value.apply(prototype, args) // this 指向不对了
                             }
                         })
                     } else { // 箭头函数
@@ -174,7 +175,7 @@ export function validateDefinePropertyTest2() {
                             ...origin,
                             value: (...args: any[]) => {
                                 (prototypeValid)[key](...args)
-                                return origin.value.apply(prototype, args)
+                                return origin.value.apply(prototype, args) // this 指向不对了
                             }
                         })
                     }
@@ -183,7 +184,7 @@ export function validateDefinePropertyTest2() {
                         ...origin,
                         set: function (...args: any[]) {
                             (prototypeValid)[key](...args)
-                            return origin.set && origin.set.apply(prototype, args)
+                            return origin.set && origin.set.apply(prototype, args) // this 指向不对了
                         }
                     })
                 }
@@ -254,106 +255,10 @@ export function validateDefinePropertyTest2() {
             Reflect.defineMetadata(VALIDMDKEY, parameterValidata, target, propertyKey)
         }
     }
-    testFunction(validateClass, validateDecorator)
-}
-
-function testFunction(
-    validateClass: (target: any) => any, 
-    validateDecorator: (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void
-){
-
-    class C0 { }
-    @validateClass
-    class C {
-        private _name: String = '';
-        constructor() {
-
-        }
-
-        @validateDecorator
-        get name() {
-            return this._name
-        }
-        set name(value: String) {
-            console.log('this', this)
-            this._name = value
-        }
-
-        @validateDecorator
-        add(a: number, b: number | string) {
-            return a.toString() + b
-        }
-
-        @validateDecorator
-        test(
-            num: number, str: string, bo: boolean,
-            nu: null, un: undefined, sym: symbol,
-            /* bi: BigInt, */cb: (a: number, b: number) => number, c: C0, ...attr: [number, number]) {
-
-            return cb.call(this, ...attr)
-        }
-        @validateDecorator
-        static staticTest(
-            num: number, str: string, bo: boolean,
-            nu: null, un: undefined, sym: symbol,
-            /* bi: BigInt, */ cb: (a: number, b: number) => number, c: C0, ...attr: [number, number]) {
-
-            return cb.call(this, ...attr)
-        }
-    }
-
-    const c = new C()
-    // c.name = "10"
-    // c.name = new String('10')
-
-    function getParams() {
-        return {
-            num: <any>10,
-            str: <any>'hello',
-            bo: <any>true,
-            nu: <any>null,
-            un: <any>undefined,
-            sym: <any>Symbol('symbol'),
-            /* bi: <any> BigInt(3), // 3n,// new BigInt(3) */
-            cb: <any>((a: number, b: number) => a + b),
-            c: <any>new C0(),
-            attr: <[number, number]>[3, 2]
-        }
-    }
-    function callTest(params: any) {
-        console.log('/*callTest*/')
-        let res = c.test(
-            params.num, params.str, params.bo,
-            params.nu, params.un, params.sym,
-            /* params.bi, */ params.cb, params.c, ...params.attr as [number, number]
-        )
-        console.log('test', res)
-    }
-    function callStaticTest(params: any) {
-        console.log('/*callStaticTest*/')
-        let res = C.staticTest(
-            params.num, params.str, params.bo,
-            params.nu, params.un, params.sym,
-            /* params.bi, */ params.cb, params.c, ...params.attr as [number, number]
-        )
-        console.log('staticTest', res)
-    }
-    let params = getParams()
-    callTest(params)
-    callStaticTest(params)
-
-    params = getParams()
-    params.num = '10'
-    // callTest(params) // 报类型错误
-    // callStaticTest(params) // 报类型错误
-
-    console.log('accessor test',)
-    c.name = 'davie'
-    console.log('c.name', c.name)
-    // c.name = 10 as any // 报类型错误
+    validateTestFunction(validateClass, validateDecorator)
 }
 
 if (require.main === module){
-    // validateDefinePropertyTest()
-    validateDefinePropertyTest2()
+    validateDefinePropertyTest()
+    validateDefinePropertyTest2() // bad
 }

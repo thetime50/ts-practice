@@ -8,6 +8,9 @@ import {
     validateDefinePropertyTest,
     validateDefinePropertyTest2
 } from "./dv-define-property"
+import {
+    validateProxyTest,
+} from "./dv-proxy"
 
 function validateTest(){
     console.log("\n\n/**** validateTest ****/")
@@ -53,3 +56,4 @@ function validateTest(){
 validateTest()
 validateDefinePropertyTest()
 validateDefinePropertyTest2()
+validateProxyTest()
